@@ -43,7 +43,7 @@ class InternLevelScene: SKScene {
         bottomBackground.position = CGPoint(x: size.width/2, y: size.height/2 - size.height/2.65)
         bottomBackground.zPosition = -1
         
-        playerModel = PlayerModel(size: size)
+        playerModel = PlayerModel(size: size, weapon: Weapon(damage: 1, size: size, type: .basic))
         groundModel = GroundModel(size: size, playerPosition: playerModel.node.position, playerSize: playerModel.node.size)
         controlsModel = ControlsModel(size: size)
         
@@ -59,6 +59,11 @@ class InternLevelScene: SKScene {
     override func didMove(to view: SKView) {
         // Call here so the safeAreaInsets are set
         playerPlayableRect = determinePlayerPlayableArea()
+        
+        // Physics World
+        physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
+        physicsWorld.contactDelegate = self
+        
         addChild(topBackground1)
         addChild(topBackground2)
         addChild(bottomBackground)
@@ -73,61 +78,50 @@ class InternLevelScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            let touchednode = atPoint(location)
-            switch touchednode {
-            case is LeftArrowButton:
-                leftButtonPressed(touch: touch)
-                break
-            case is RightArrowButton:
-                rightButtonPressed(touch: touch)
-                break
-            default:
-                break
-            }
+            let touchedNode = atPoint(location)
+            determineActionBasedOn(touchedNode: touchedNode, touch: touch)
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
+            let touchedNode = atPoint(location)
             if let button = activeTouches[touch] {
                 if !button.contains(location) {
-                    deactivate(button: button, textureName: controlsModel.getBaseTextureName(button)!)
+                    deactivate(button: button, baseTextureName: controlsModel.getBaseTextureName(button)!)
                     playerModel.stopPlayerAnimation()
                     activeTouches[touch] = nil
-                    
-                    let touchedNode = atPoint(location)
-                    switch touchedNode {
-                    case is LeftArrowButton:
-                        leftButtonPressed(touch: touch)
-                        break
-                    case is RightArrowButton:
-                        rightButtonPressed(touch: touch)
-                        break
-                    default:
-                        break
-                    }
+                    determineActionBasedOn(touchedNode: touchedNode, touch: touch)
                 }
             } else {
-                let touchedNode = atPoint(location)
-                switch touchedNode {
-                case is LeftArrowButton:
-                    leftButtonPressed(touch: touch)
-                    break
-                case is RightArrowButton:
-                    rightButtonPressed(touch: touch)
-                    break
-                default:
-                    break
-                }
+                determineActionBasedOn(touchedNode: touchedNode, touch: touch)
             }
+        }
+    }
+    
+    private func determineActionBasedOn(touchedNode: SKNode, touch: UITouch) {
+        switch touchedNode {
+        case is LeftArrowButton:
+            leftButtonPressed(touch: touch)
+            break
+        case is RightArrowButton:
+            rightButtonPressed(touch: touch)
+            break
+        case is JumpLabel:
+            jumpButtonPressed(touch: touch)
+            break
+        case is JumpButton:
+            jumpButtonPressed(touch: touch)
+        default:
+            break
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             if let button = activeTouches[touch] {
-                deactivate(button: button, textureName: controlsModel.getBaseTextureName(button)!)
+                deactivate(button: button, baseTextureName: controlsModel.getBaseTextureName(button)!)
                 activeTouches[touch] = nil
                 playerModel.stopPlayerAnimation()
             }
@@ -137,7 +131,7 @@ class InternLevelScene: SKScene {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             if let button = activeTouches[touch] {
-                deactivate(button: button, textureName: controlsModel.getBaseTextureName(button)!)
+                deactivate(button: button, baseTextureName: controlsModel.getBaseTextureName(button)!)
                 activeTouches[touch] = nil
                 playerModel.stopPlayerAnimation()
             }
@@ -150,12 +144,21 @@ class InternLevelScene: SKScene {
     
     func leftButtonPressed(touch: UITouch) {
         activeTouches[touch] = controlsModel.leftArrowButton
-        animateButton(button: controlsModel.leftArrowButton, textureName: Constants.leftArrowImageName + Constants.indicatePressed)
+        animateButtonPressed(button: controlsModel.leftArrowButton, baseTextureName: controlsModel.getBaseTextureName(controlsModel.leftArrowButton)!)
     }
     
     func rightButtonPressed(touch: UITouch) {
         activeTouches[touch] = controlsModel.rightArrowButton
-        animateButton(button: controlsModel.rightArrowButton, textureName:Constants.rightArrowImageName + Constants.indicatePressed)
+        animateButtonPressed(button: controlsModel.rightArrowButton, baseTextureName: controlsModel.getBaseTextureName(controlsModel.rightArrowButton)!)
+    }
+    
+    func jumpButtonPressed(touch: UITouch) {
+        animateButtonPressed(button: controlsModel.jumpButton, baseTextureName: controlsModel.getBaseTextureName(controlsModel.jumpButton)!)
+        self.run(waitForAnimation) {
+            deactivate(button: self.controlsModel.jumpButton, baseTextureName: self.controlsModel.getBaseTextureName(self.controlsModel.jumpButton)!)
+        }
+        
+        playerModel.playerJump()
     }
     
     func movePlayerAndBackground(){
@@ -242,3 +245,14 @@ class InternLevelScene: SKScene {
 }
 
 
+extension InternLevelScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        let contactA = contact.bodyA.categoryBitMask
+        let contactB = contact.bodyB.categoryBitMask
+        if (contactA == PhysicsCategory.player && contactB == PhysicsCategory.ground) || (contactB == PhysicsCategory.player && contactA == PhysicsCategory.ground) {
+            if playerModel.isJumping {
+                playerModel.isJumping = false
+            }
+        }
+    }
+}

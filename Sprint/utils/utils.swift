@@ -30,10 +30,10 @@ func getTextures(baseImageName: String, numberOfImages: Int) -> [SKTexture] {
 }
 
 
-func animateButton(button: SKSpriteNode,  textureName: String) {
-    button.texture = SKTexture(imageNamed: textureName)
+func animateButtonPressed(button: SKSpriteNode,  baseTextureName: String) {
+    button.texture = SKTexture(imageNamed: baseTextureName + Constants.indicatePressed)
 }
 
-func deactivate(button: SKSpriteNode, textureName: String) {
-    button.texture = SKTexture(imageNamed: textureName)
+func deactivate(button: SKSpriteNode, baseTextureName: String) {
+    button.texture = SKTexture(imageNamed: baseTextureName)
 }

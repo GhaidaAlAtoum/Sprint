@@ -19,7 +19,12 @@ class PlayerModel {
     let animatePlayerMovementDuration = 0.1
     let wrapAnimationName = "wrapPlayerAnimation"
     
-    init(size: CGSize) {
+    var isJumping: Bool = false
+    var jumpForce: CGFloat = 400.0
+    
+    var weapon: Weapon
+    
+    init(size: CGSize, weapon: Weapon) {
         node = PlayerNode(imageNamed: Constants.playerImageIdleBaseName + "0")
         node.size = CGSize(width: 809/8, height: 1024/8)
         basePlayerPosision = CGPoint(x: size.width/8, y: (size.height/2 - size.height/2.5) + node.size.height)
@@ -36,6 +41,13 @@ class PlayerModel {
         node.physicsBody?.contactTestBitMask = PhysicsCategory.ground
         
         playerAnimation = SKAction.animate(with: getTextures(baseImageName: Constants.playerImageIdleBaseName , numberOfImages: Constants.playerImageIdleNumberOfImages), timePerFrame: 0.1)
+        
+        self.weapon = weapon
+        self.weapon.node.position = CGPoint(x: node.size.width/3, y: -node.size.height/4)
+        self.weapon.node.xScale = -1.0 //TODO: Might not always be needed to flip horizontaly
+        self.weapon.node.zRotation = -45
+        
+        self.node.addChild(weapon.node)
     }
     
     func startPlayerAnimation() {
@@ -76,5 +88,11 @@ class PlayerModel {
             SKAction.unhide(),
             SKAction.move(to: CGPoint(x: finalLocation, y: node.position.y), duration: animatePlayerMovementDuration)
         ]), withKey: wrapAnimationName)
+    }
+    
+    func playerJump() {
+        if isJumping {return}
+        isJumping = true
+        node.physicsBody?.applyImpulse(CGVector(dx: 0, dy: jumpForce))
     }
 }

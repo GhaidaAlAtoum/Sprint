@@ -17,7 +17,7 @@ class MainMenuOptionsNode: SKNode {
     let startGameLabel: StartGameLabel
     
     init(size: CGSize) {
-        startGameButton = StartGameButton(imageNamed: Constants.baseRedButtonImageName)
+        startGameButton = StartGameButton(imageNamed: Constants.startGameBaseButton)
         startGameButton.scale(to: CGSize(width: 200, height: 50))
         startGameButton.position = CGPoint(x: size.width/2, y: size.height/2.5)
         startGameButton.zPosition = 0

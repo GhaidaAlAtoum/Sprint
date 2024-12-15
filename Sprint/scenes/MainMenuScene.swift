@@ -56,6 +56,7 @@ class MainMenuScene: SKScene {
     }
     
     func startGame() {
+        animateButtonPressed(button: mainMenuOptionsNode.startGameButton, baseTextureName: Constants.startGameBaseButton)
         SceneTransitioner.shared.transition(self, toScene: SceneTransitioner.shared.getNextLevelScene(size: self.size))
     }
 }

@@ -8,13 +8,14 @@
 struct Constants {
     static let mainMenuBackgroundImageName:String = "main"
     static let internLevelBackgroundImageName:String = "level0_top"
-    static let baseRedButtonImageName:String = "red_button_0"
+    static let startGameBaseButton:String = "startGameButton"
     static let playerImageIdleBaseName = "player.Idle_"
     static let playerImageIdleNumberOfImages = 10
     static let leftArrowImageName = "leftArrow"
     static let rightArrowImageName = "rightArrow"
     static let indicatePressed = "_pressed"
     static let controlBackground = "bottom"
+    static let circularControButton = "circularButton"
 }
 
 struct PhysicsCategory {

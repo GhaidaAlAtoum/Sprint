@@ -12,9 +12,21 @@ import SpriteKit
 class LeftArrowButton: SKSpriteNode {}
 class RightArrowButton: SKSpriteNode {}
 
+class JumpLabel: SKLabelNode{}
+class JumpButton: SKSpriteNode {}
+
+class AttackLabel: SKLabelNode {}
+class AttackButton: SKSpriteNode {}
+
 class ControlsModel {
     let leftArrowButton: LeftArrowButton
     let rightArrowButton: RightArrowButton
+    
+    let jumpLabel: JumpLabel
+    let jumpButton: JumpButton
+    
+    let attackLabel: AttackLabel
+    let attackButton: AttackButton
     
     init(size: CGSize) {
         let buttonsX = size.width / 9
@@ -32,19 +44,51 @@ class ControlsModel {
         rightArrowButton.position = CGPoint(x: buttonsX + buttonsSize * 1.5, y: buttonsHeight)
         rightArrowButton.zPosition = 1
         rightArrowButton.name = "rightButton"
+        
+        jumpButton = JumpButton(imageNamed: Constants.circularControButton)
+        jumpButton.scale(to: CGSize(width: buttonsSize, height: buttonsSize))
+        jumpButton.position = CGPoint(x:  size.width - buttonsX * 1.1, y: buttonsHeight)
+        jumpButton.zPosition = 1
+        jumpButton.name = "jumpButton"
+        
+        jumpLabel = JumpLabel(text: "Jump")
+        jumpLabel.fontSize = 20
+        jumpLabel.position = jumpButton.position
+        jumpLabel.zPosition = 2
+        jumpLabel.verticalAlignmentMode = .center
+        
+        attackButton = AttackButton(imageNamed: Constants.circularControButton)
+        attackButton.scale(to: CGSize(width: buttonsSize, height: buttonsSize))
+        attackButton.position = CGPoint(x: jumpButton.position.x - buttonsX * 1.1, y: buttonsHeight)
+        attackButton.zPosition = 1
+        attackButton.name = "attackButton"
+        
+        attackLabel = AttackLabel(text: "Attack")
+        attackLabel.fontSize = 20
+        attackLabel.position = attackButton.position
+        attackLabel.zPosition = 2
+        attackLabel.verticalAlignmentMode = .center
     }
     
     func getChildren() -> [SKNode] {
         return [
             leftArrowButton,
-            rightArrowButton
+            rightArrowButton,
+            jumpButton,
+            attackButton,
+            jumpLabel,
+            attackLabel
         ]
     }
     
-    func getBaseTextureName(_ node: SKSpriteNode) -> String? {
+    func getBaseTextureName(_ node: SKNode) -> String? {
         switch(node) {
         case is LeftArrowButton: return Constants.leftArrowImageName
         case is RightArrowButton: return Constants.rightArrowImageName
+        case is JumpLabel: return Constants.circularControButton
+        case is AttackLabel: return Constants.circularControButton
+        case is JumpButton: return Constants.circularControButton
+        case is JumpLabel: return Constants.circularControButton
         default: return nil
         }
     }
