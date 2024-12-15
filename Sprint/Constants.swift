@@ -10,7 +10,15 @@ struct Constants {
     static let internLevelBackgroundImageName:String = "level0_top"
     static let startGameBaseButton:String = "startGameButton"
     static let playerImageIdleBaseName = "player.Idle_"
+    static let playerImageWalkBaseName = "player.Walk_"
+    static let playerImageJumpBaseName = "player.jump_"
+    static let playerIdleAttackBaseName = "player.IdleAttack_"
+    static let playerRunAttackNumberOfImages = 10
+    static let playerRunAttackBaseName = "player.RunAttack_"
+    static let playerIdleAttackNumberOfImages = 10
     static let playerImageIdleNumberOfImages = 10
+    static let playerImageWalkNumberOfImages = 10
+    static let playerImageJumpNumberOfImages = 15
     static let leftArrowImageName = "leftArrow"
     static let rightArrowImageName = "rightArrow"
     static let indicatePressed = "_pressed"
@@ -19,6 +27,9 @@ struct Constants {
 }
 
 struct PhysicsCategory {
-    static let player: UInt32 = 0x1 << 0
-    static let ground: UInt32 = 0x1 << 1
+    static let none: UInt32 = 0
+    static let player: UInt32 = 0b1
+    static let ground: UInt32 = 0b10
+    static let projictile: UInt32 = 0b100
+    static let enemy: UInt32 = 0b1000
 }

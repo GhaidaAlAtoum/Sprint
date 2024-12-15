@@ -28,6 +28,9 @@ class ControlsModel {
     let attackLabel: AttackLabel
     let attackButton: AttackButton
     
+    
+    let weaponControlRect: CGRect
+    
     init(size: CGSize) {
         let buttonsX = size.width / 9
         let buttonsSize: CGFloat = 80
@@ -68,6 +71,13 @@ class ControlsModel {
         attackLabel.position = attackButton.position
         attackLabel.zPosition = 2
         attackLabel.verticalAlignmentMode = .center
+        
+        weaponControlRect = CGRect(
+            x: rightArrowButton.position.x + buttonsSize,
+            y: buttonsHeight,
+            width: (attackButton.position.x - attackButton.size.width) - (rightArrowButton.position.x + rightArrowButton.size.width),
+            height: buttonsHeight
+        )
     }
     
     func getChildren() -> [SKNode] {
@@ -92,4 +102,14 @@ class ControlsModel {
         default: return nil
         }
     }
+    
+    func getWeaponSelectionBoundingRect() -> CGRect {
+        return weaponControlRect
+    }
+    
+    func updateSelectedWeapon(weaponName: String) {
+        attackButton.texture = SKTexture(imageNamed: "selected_\(weaponName)")
+        attackLabel.isHidden = true
+    }
+
 }
