@@ -7,7 +7,7 @@
 import Foundation
 import SpriteKit
 
-class Ground {
+class GroundModel {
     let node: SKSpriteNode
     
     init(size: CGSize, playerPosition: CGPoint, playerSize: CGSize) {

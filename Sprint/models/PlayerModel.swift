@@ -15,11 +15,15 @@ class PlayerModel {
     let playerAnimation: SKAction
     let numberOfTexturesIdel = 10
     let movementSpeed: CGFloat = 2.0
+    let basePlayerPosision: CGPoint
+    let animatePlayerMovementDuration = 0.1
+    let wrapAnimationName = "wrapPlayerAnimation"
     
     init(size: CGSize) {
         node = PlayerNode(imageNamed: Constants.playerImageIdleBaseName + "0")
         node.size = CGSize(width: 809/8, height: 1024/8)
-        node.position = CGPoint(x: size.width/2, y: (size.height/2 - size.height/2.5) + node.size.height)
+        basePlayerPosision = CGPoint(x: size.width/8, y: (size.height/2 - size.height/2.5) + node.size.height)
+        node.position = basePlayerPosision
         node.zPosition = 1
         node.name = "player"
         
@@ -42,5 +46,35 @@ class PlayerModel {
     
     func stopPlayerAnimation() {
         node.removeAction(forKey: "animation")
+    }
+    
+    func movePlayer(direction: Direction) {
+        self.movePlayer(distance: self.movementSpeed, direction: direction)
+    }
+    
+    func movePlayer(distance: CGFloat, direction: Direction) {
+        if (allowedToMovePlayer()) {
+            node.position.x += (direction.rawValue * distance)
+            if (direction == Direction.left) {
+                node.xScale = -1.0
+            } else {
+                node.xScale = 1.0
+            }
+        }
+    }
+    
+    func allowedToMovePlayer() -> Bool {
+        return node.action(forKey: wrapAnimationName) == nil
+    }
+    
+    func wrapPlayer(finalLocation: CGFloat, direction: Direction, screenWidth: CGFloat) {
+        node.run(SKAction.sequence([
+            SKAction.move(to: CGPoint(x: direction.rawValue * (screenWidth + screenWidth/2), y: node.position.y), duration: animatePlayerMovementDuration),
+            SKAction.hide(),
+            SKAction.move(to: CGPoint(x: direction.rawValue * (-screenWidth), y: node.position.y), duration: animatePlayerMovementDuration),
+            SKAction.wait(forDuration: animatePlayerMovementDuration),
+            SKAction.unhide(),
+            SKAction.move(to: CGPoint(x: finalLocation, y: node.position.y), duration: animatePlayerMovementDuration)
+        ]), withKey: wrapAnimationName)
     }
 }

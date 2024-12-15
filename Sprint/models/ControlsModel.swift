@@ -12,7 +12,7 @@ import SpriteKit
 class LeftArrowButton: SKSpriteNode {}
 class RightArrowButton: SKSpriteNode {}
 
-class Controls {
+class ControlsModel {
     let leftArrowButton: LeftArrowButton
     let rightArrowButton: RightArrowButton
     
@@ -20,8 +20,6 @@ class Controls {
         let buttonsX = size.width / 9
         let buttonsSize: CGFloat = 80
         let buttonsHeight = size.height / 4 - buttonsSize / 1.5
-        
-        print(buttonsHeight)
         
         leftArrowButton = LeftArrowButton(imageNamed: Constants.leftArrowImageName)
         leftArrowButton.scale(to: CGSize(width: buttonsSize, height: buttonsSize))
@@ -41,5 +39,13 @@ class Controls {
             leftArrowButton,
             rightArrowButton
         ]
+    }
+    
+    func getBaseTextureName(_ node: SKSpriteNode) -> String? {
+        switch(node) {
+        case is LeftArrowButton: return Constants.leftArrowImageName
+        case is RightArrowButton: return Constants.rightArrowImageName
+        default: return nil
+        }
     }
 }

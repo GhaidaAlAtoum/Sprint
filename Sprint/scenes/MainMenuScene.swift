@@ -56,7 +56,6 @@ class MainMenuScene: SKScene {
     }
     
     func startGame() {
-        print("Attempting to start game")
         SceneTransitioner.shared.transition(self, toScene: SceneTransitioner.shared.getNextLevelScene(size: self.size))
     }
 }
