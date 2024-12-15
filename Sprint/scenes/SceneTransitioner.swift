@@ -10,11 +10,18 @@ import SpriteKit
 class SceneTransitioner {
     static let shared:SceneTransitioner = SceneTransitioner()
     
-    func getNextLevel() {
+    func transition(_ fromScene: SKScene, toScene: SKScene) {
+        toScene.scaleMode = fromScene.scaleMode
+        fromScene.run(waitForAnimation) {
+            fromScene.view?.presentScene(toScene)
+        }
+    }
+    
+    func getNextLevelScene(size: CGSize) -> SKScene{
         switch(UserConfig.shared.getCurrentLevel()) {
         case 1:
             print("Load Level 1")
-            break
+            return InternLevelScene(size: size)
         case 2:
             print("Load Level 2")
             break
@@ -25,7 +32,8 @@ class SceneTransitioner {
             print("Load Level 4")
             break
         default:
-            break
+            return UnknownScene(size: size)
         }
+        return UnknownScene(size: size)
     }
 }

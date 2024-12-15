@@ -8,8 +8,6 @@
 import Foundation
 import SpriteKit
 
-class Background: SKSpriteNode {}
-
 class MainMenuScene: SKScene {
     let background: Background
     let mainMenuOptionsNode: MainMenuOptionsNode
@@ -41,12 +39,10 @@ class MainMenuScene: SKScene {
             
             switch touchedNode {
             case is StartGameButton:
-                print("Attempting to start game")
-                SceneTransitioner.shared.getNextLevel()
+                startGame()
                 break
             case is StartGameLabel:
-                SceneTransitioner.shared.getNextLevel()
-                print("Attempting to start game")
+                startGame()
                 break
 //                let internLevelScene = InternLevelScene(size: self.size)
 //                levelOneScene.scaleMode = self.scaleMode
@@ -57,5 +53,10 @@ class MainMenuScene: SKScene {
                 break
             }
         }
+    }
+    
+    func startGame() {
+        print("Attempting to start game")
+        SceneTransitioner.shared.transition(self, toScene: SceneTransitioner.shared.getNextLevelScene(size: self.size))
     }
 }
