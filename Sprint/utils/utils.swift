@@ -34,6 +34,28 @@ func animateButtonPressed(button: SKSpriteNode,  baseTextureName: String) {
     button.texture = SKTexture(imageNamed: baseTextureName + Constants.indicatePressed)
 }
 
+func animateToggle(toggle: SKSpriteNode, isOn: Bool) {
+    toggle.texture = SKTexture(imageNamed: Constants.toggleTransitionImage)
+    toggle.run(waitForAnimation) {
+        if(isOn) {
+            toggle.texture = SKTexture(imageNamed: Constants.toggleOnImage)
+        } else {
+            toggle.texture = SKTexture(imageNamed: Constants.toggleOffImage)
+        }
+    }
+}
+
+func animateSoundButton(button: SKSpriteNode, isOn: Bool) {
+    button.texture = SKTexture(imageNamed: Constants.soundButtonPressedImage)
+    button.run(waitForAnimation) {
+        if(isOn) {
+            button.texture = SKTexture(imageNamed: Constants.soundButtonOnImage)
+        } else {
+            button.texture = SKTexture(imageNamed: Constants.soundButtonOffImage)
+        }
+    }
+}
+
 func deactivate(button: SKSpriteNode, baseTextureName: String) {
     button.texture = SKTexture(imageNamed: baseTextureName)
 }

@@ -13,11 +13,24 @@ class UserConfig {
     var currentLevel:Int = 1
     let currentLevelKey = "current_level"
     
+    var vibration: Bool
+    let vibrationEnabledKey:String = "vibration_enabled"
+    var paused: Bool
+    
     init() {
+        self.vibration = true
+        self.paused = false
+        self.currentLevel = 1
         if (isKeyPresentInUserDefaults(key: currentLevelKey)) {
             currentLevel = UserDefaults.standard.integer(forKey: currentLevelKey)
         } else {
-            updateCurrentLevel(1)
+            updateCurrentLevel(self.currentLevel)
+        }
+        
+        if (isKeyPresentInUserDefaults(key: vibrationEnabledKey)) {
+            vibration = UserDefaults.standard.bool(forKey: vibrationEnabledKey)
+        } else {
+            trackVibrationValue()
         }
     }
     
@@ -28,6 +41,18 @@ class UserConfig {
     func updateCurrentLevel(_ level: Int) {
         self.currentLevel = level
         UserDefaults.standard.set(level, forKey: currentLevelKey)
+    }
+    
+    func toggleVibration() {
+        self.vibration.toggle()
+    }
+    
+    func isVibrationEnabled() -> Bool {
+        return self.vibration
+    }
+    
+    private func trackVibrationValue() {
+        UserDefaults.standard.set(vibration, forKey: vibrationEnabledKey)
     }
     
     func getCurrentLevel() -> Int {

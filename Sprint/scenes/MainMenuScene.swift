@@ -8,9 +8,11 @@
 import Foundation
 import SpriteKit
 
+class SoundButton: SKSpriteNode{}
+
 class MainMenuScene: SKScene {
     let background: Background
-    let mainMenuOptionsNode: MainMenuOptionsNode
+    let mainMenuOptionsNode: MainMenuNode
     
     override init(size: CGSize) {
         // Setup Background
@@ -20,9 +22,11 @@ class MainMenuScene: SKScene {
         background.zPosition = -1
         
         // Add Main Menu Options
-        mainMenuOptionsNode = MainMenuOptionsNode(size: size)
-        
+        mainMenuOptionsNode = MainMenuNode(size: size)
+
         super.init(size: size)
+        SoundManager.shared.stopSounds()
+        SoundManager.shared.playSoundTrack()
         
         addChild(background)
         addChild(mainMenuOptionsNode)
@@ -44,11 +48,14 @@ class MainMenuScene: SKScene {
             case is StartGameLabel:
                 startGame()
                 break
-//                let internLevelScene = InternLevelScene(size: self.size)
-//                levelOneScene.scaleMode = self.scaleMode
-//                animateButton(button: playButton, textureName: "Button")
-//                playLabel.position.y -= 10
-//                transitionToNextScene(scene: levelOneScene)
+            case is MainMenuOptionsButton:
+                openMainOptionsScene()
+                break
+            case is SoundButton:
+                SoundManager.shared.toggleSound()
+                animateSoundButton(button: mainMenuOptionsNode.soundButton, isOn: SoundManager.shared.isSoundOn())
+                SoundManager.shared.playSoundTrack()
+                break
             default:
                 break
             }
@@ -58,5 +65,10 @@ class MainMenuScene: SKScene {
     func startGame() {
         animateButtonPressed(button: mainMenuOptionsNode.startGameButton, baseTextureName: Constants.startGameBaseButton)
         SceneTransitioner.shared.transition(self, toScene: SceneTransitioner.shared.getNextLevelScene(size: self.size))
+    }
+    
+    func openMainOptionsScene() {
+        animateButtonPressed(button: mainMenuOptionsNode.optionsButton, baseTextureName: Constants.mainMenuOptionsButtonName)
+        SceneTransitioner.shared.transition(self, toScene: MainOptionsScene(size: size))
     }
 }

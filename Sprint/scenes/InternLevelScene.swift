@@ -206,20 +206,7 @@ class InternLevelScene: SKScene {
         return false
     }
     
-    
     func spawnEnemy() {
-//        let spawn = SKAction.run { [weak self] in
-//            let newEnemy = NewToolsEnemy(hp: 3, damage: 1, speed: 8)
-//            let position = CGPoint(x: 0, y: (self?.groundModel.node.position.y ?? 0) + newEnemy.node.size.height/2 * 1.2)
-//            newEnemy.node.position = position
-//            self?.newToolEnemies.append(newEnemy)
-//            self?.addChild(newEnemy.node)
-//        }
-//        
-//        self.run(SKAction.repeatForever(SKAction.sequence([
-//            spawn, SKAction.wait(forDuration: 60)
-//        ])))
-        
         let enemy = NewToolsEnemy(hp: 3, damage: 1, speed: 8, size: playerModel.node.size)
         
         enemy.node.name = "enemy"
@@ -240,21 +227,6 @@ class InternLevelScene: SKScene {
             enemy.moveEnemy(direction: playerModel.node.position.x >= enemy.node.position.x ? 1: -1)
         }
     }
-
-//    func checkSwordCollision() {
-//        var i = 0
-//        for slime in slimes {
-//            if (player.sword.node.intersects(slime.node)) {
-//                if (player.isJumpingAttacking) {
-//                    playerModel.impulsePlayer(force: pressingJumpAttack ? player.jumpForce/1.2: playerModel.jumpForce / 2)
-//                }
-//                if slime.takeDamage(direction: player.node.position.x > slime.node.position.x ? -1 : 1) {
-//                    slimes.remove(at: i)
-//                }
-//            }
-//            i += 1
-//        }
-//    }
     
     func weaponSlotButtonPressed(nodeSelected: SKNode) {
         if let weaponSlotSelected = nodeSelected as? WeaponButton {
@@ -362,18 +334,6 @@ class InternLevelScene: SKScene {
             width: size.width - (self.view?.safeAreaInsets.right ?? 0.0) * leftMargingMultiplier,
             height: playableHeight)
     }
-    
-    private func debugDrawPlayableArea() {
-        let shape = SKShapeNode()
-        let path = CGMutablePath()
-        path.addRect(playerPlayableRect)
-        shape.path = path
-        shape.strokeColor = SKColor.red
-        shape.lineWidth = 20.0
-        
-        addChild(shape)
-    }
-
 }
 
 
@@ -392,7 +352,6 @@ extension InternLevelScene: SKPhysicsContactDelegate {
             if (!(contact.bodyA.node is PlayerNode)) {
                 enemyNode = contact.bodyA.node
             }
-            print("Player; \(playerModel.node.position) , enemy\(enemyNode?.position)")
             
             if (ceil(playerModel.node.position.y) > ceil(enemyNode?.position.y ?? size.height)) {
                 let blinkTimes = 10.0

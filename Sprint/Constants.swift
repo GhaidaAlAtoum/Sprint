@@ -8,7 +8,7 @@
 struct Constants {
     static let mainMenuBackgroundImageName:String = "main"
     static let internLevelBackgroundImageName:String = "level0_top"
-    static let startGameBaseButton:String = "startGameButton"
+    static let startGameBaseButton:String = "button"
     static let playerImageIdleBaseName = "player.Idle_"
     static let playerImageWalkBaseName = "player.Walk_"
     static let playerImageJumpBaseName = "player.jump_"
@@ -24,6 +24,22 @@ struct Constants {
     static let indicatePressed = "_pressed"
     static let controlBackground = "bottom"
     static let circularControButton = "circularButton"
+    static let fontName = "ARCADECLASSIC"
+    
+    static let mainMenuOptionsButtonName:String = "configButton"
+    
+    
+    static let optionsSceneBackground:String = "options_menu_backgroun"
+    static let backButtonName:String = "backButton"
+    
+    static let toggleOnImage:String = "toggle_on"
+    static let toggleOffImage:String = "toggle_off"
+    static let toggleTransitionImage:String = "toggle_transition"
+    
+    
+    static let soundButtonOnImage:String = "soundButton"
+    static let soundButtonOffImage:String = "soundButton_off"
+    static let soundButtonPressedImage:String = "soundButton_pressed"
 }
 
 struct PhysicsCategory {
