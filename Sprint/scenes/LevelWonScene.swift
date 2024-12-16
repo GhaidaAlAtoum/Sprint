@@ -21,13 +21,13 @@ class LevelWonScene: SKScene {
     override init(size: CGSize) {
         SoundManager.shared.stopSounds()
         
-        topBackground1 = Background(imageNamed: Constants.internLevelBackgroundImageName)
+        topBackground1 = Background(imageNamed: Constants.won_level_background)
         topBackground1.scale(to: CGSize(width: size.width, height: size.height/1.25))
         topBackground1.anchorPoint = CGPointZero
         topBackground1.position = CGPoint(x: 0, y: size.height/5)
         topBackground1.zPosition = -1
         
-        topBackground2 = Background(imageNamed: Constants.internLevelBackgroundImageName)
+        topBackground2 = Background(imageNamed: Constants.won_level_background)
         topBackground2.anchorPoint = CGPointZero
         topBackground2.scale(to: CGSize(width: size.width, height: size.height/1.25))
         topBackground2.position = CGPoint(x: topBackground1.size.width-1, y:  size.height/5)

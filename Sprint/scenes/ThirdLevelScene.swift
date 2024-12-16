@@ -11,7 +11,7 @@ import SpriteKit
 class ThirdLevelScene: BaseLevelScene {
     
     init(size: CGSize) {
-        super.init(size: size, gameTimeSeconds: 60, damageCaused: 20, maxStessAllowed: 70, waitSecondsBeforeAnotherEnemy: 2.0)
+        super.init(size: size, gameTimeSeconds: getLevelDuration(level: 2), damageCaused: 20, maxStessAllowed: 70, waitSecondsBeforeAnotherEnemy: 2.0, enemySpeedMultiplier: 3.0)
     }
     
     required init?(coder aDecoder: NSCoder) {

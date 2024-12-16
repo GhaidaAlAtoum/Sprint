@@ -76,14 +76,16 @@ class BaseLevelScene: SKScene {
     
     let waitSecondsBeforeAnotherEnemy: CGFloat
     
-    init(size: CGSize, gameTimeSeconds: Int, damageCaused: Int, maxStessAllowed: Int, waitSecondsBeforeAnotherEnemy: CGFloat) {
-        topBackground1 = Background(imageNamed: Constants.internLevelBackgroundImageName)
+    let enemySpeedMultiplier:CGFloat  = 3.0
+    
+    init(size: CGSize, gameTimeSeconds: Int, damageCaused: Int, maxStessAllowed: Int, waitSecondsBeforeAnotherEnemy: CGFloat, enemySpeedMultiplier: CGFloat = 3.0) {
+        topBackground1 = Background(imageNamed: getLevelTopBackgroundName(level: UserConfig.shared.getCurrentLevel()))
         topBackground1.scale(to: CGSize(width: size.width, height: size.height/1.25))
         topBackground1.anchorPoint = CGPointZero
         topBackground1.position = CGPoint(x: 0, y: size.height/5)
         topBackground1.zPosition = -1
         
-        topBackground2 = Background(imageNamed: Constants.internLevelBackgroundImageName)
+        topBackground2 = Background(imageNamed: getLevelTopBackgroundName(level: UserConfig.shared.getCurrentLevel()))
         topBackground2.anchorPoint = CGPointZero
         topBackground2.scale(to: CGSize(width: size.width, height: size.height/1.25))
         topBackground2.position = CGPoint(x: topBackground1.size.width-1, y:  size.height/5)
@@ -127,7 +129,8 @@ class BaseLevelScene: SKScene {
         levelLabel.horizontalAlignmentMode = .center
         levelLabel.verticalAlignmentMode = .baseline
         levelLabel.fontColor = .black
-        levelLabel.text = "Level \(UserConfig.shared.getCurrentLevel())"
+//        levelLabel.text = "Level \(UserConfig.shared.getCurrentLevel())"
+        levelLabel.text = getLevelName(level: UserConfig.shared.getCurrentLevel())
         
         timerBackground = SKSpriteNode(imageNamed: Constants.startGameBaseButton)
         timerBackground.scale(to: CGSize(width: 100, height: 50))
@@ -421,7 +424,7 @@ class BaseLevelScene: SKScene {
             self.enemies.append(enemy.node)
             
             self.addChild(enemy.node)
-            let actionMove = SKAction.moveTo(x: -enemy.node.size.width/2, duration: self.playerModel.movementSpeed * 3)
+            let actionMove = SKAction.moveTo(x: -enemy.node.size.width/2, duration: self.playerModel.movementSpeed * self.enemySpeedMultiplier)
             let actionRemove = SKAction.removeFromParent()
             enemy.node.run(SKAction.sequence([actionMove, actionRemove]), withKey: SceneActions.move_enemy)
         }

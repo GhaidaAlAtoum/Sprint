@@ -7,7 +7,6 @@
 
 struct Constants {
     static let mainMenuBackgroundImageName:String = "main"
-    static let internLevelBackgroundImageName:String = "level0_top"
     static let startGameBaseButton:String = "button"
     static let playerImageIdleBaseName = "player.Idle_"
     static let playerImageWalkBaseName = "player.Walk_"
@@ -29,7 +28,7 @@ struct Constants {
     static let optionsButton:String = "configButton"
     
     
-    static let optionsSceneBackground:String = "options_menu_backgroun"
+    static let optionsSceneBackground:String = "options_menu_background"
     static let backButtonName:String = "backButton"
     
     static let toggleOnImage:String = "toggle_on"
@@ -55,6 +54,8 @@ struct Constants {
     static let stressHigh = "stressHigh"
     static let cushedIt = "curshedIt"
 
+    static let lost_level_background = "lost_background"
+    static let won_level_background = "won_background"
     
     
 }

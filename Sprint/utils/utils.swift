@@ -29,6 +29,30 @@ func getTextures(baseImageName: String, numberOfImages: Int) -> [SKTexture] {
     return textures
 }
 
+func getLevelTopBackgroundName(level: Int) -> String {
+    print("level\(level)_background_top")
+   return "level\(level)_background_top"
+}
+
+func getLevelDuration(level: Int) -> Int {
+    switch level {
+    case 0 : return 10
+    case 1 : return 10
+    case 2 : return 10
+    case 3 : return 10
+    default: return 0
+    }
+}
+
+func getLevelName(level: Int) -> String {
+    switch level {
+    case 0 : return "Entry"
+    case 1 : return "Senior"
+    case 2 : return "Staff"
+    case 3 : return "Architect"
+    default: return ""
+    }
+}
 
 func animateButtonPressed(button: SKSpriteNode,  baseTextureName: String) {
     button.texture = SKTexture(imageNamed: baseTextureName + Constants.indicatePressed)

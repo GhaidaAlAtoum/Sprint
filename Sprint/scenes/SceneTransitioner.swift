@@ -30,6 +30,8 @@ class SceneTransitioner {
         case 2:
             return ThirdLevelScene(size: size)
         case 3:
+            return BossLevelScene(size: size)
+        case 4:
             UserConfig.shared.updateCurrentLevel(0)
             return MainMenuScene(size: size)
         default:

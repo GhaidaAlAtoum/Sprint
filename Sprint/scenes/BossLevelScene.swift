@@ -1,5 +1,5 @@
 //
-//  SecondLevel.swift
+//  BossLevelScene.swift
 //  Sprint
 //
 //  Created by Ghaida Atoum on 12/16/24.
@@ -8,10 +8,10 @@
 import Foundation
 import SpriteKit
 
-class SecondLevelScene: BaseLevelScene {
+class BossLevelScene: BaseLevelScene {
     
     init(size: CGSize) {
-        super.init(size: size, gameTimeSeconds: getLevelDuration(level: 1), damageCaused: 10, maxStessAllowed: 80, waitSecondsBeforeAnotherEnemy: 3.0, enemySpeedMultiplier: 3.25)
+        super.init(size: size, gameTimeSeconds: getLevelDuration(level: 3), damageCaused: 30, maxStessAllowed: 70, waitSecondsBeforeAnotherEnemy: 1.0, enemySpeedMultiplier: 5.0)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -25,7 +25,10 @@ class SecondLevelScene: BaseLevelScene {
             EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level0_enemy2")),
             EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level1_enemy0")),
             EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level1_enemy1")),
-            EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level1_enemy2"))
+            EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level1_enemy2")),
+            EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level2_enemy0")),
+            EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "level2_enemy1")),
+            EnemyModel(size: self.playerModel.node.size, node: EnemyNode(imageNamed: "boss"))
         ]
         let randomIndex = Int(arc4random_uniform(UInt32(nodes.count)))
         return nodes[randomIndex]

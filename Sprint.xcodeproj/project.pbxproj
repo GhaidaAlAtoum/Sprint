@@ -10,22 +10,9 @@
 		F6A147E72D0E43BC000BECCC /* Sprint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sprint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F6A148512D0E4B52000BECCC /* Exceptions for "Sprint" folder in "Sprint" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Untitled.swift,
-			);
-			target = F6A147E62D0E43BC000BECCC /* Sprint */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F6A148462D0E4B52000BECCC /* Sprint */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F6A148512D0E4B52000BECCC /* Exceptions for "Sprint" folder in "Sprint" target */,
-			);
 			path = Sprint;
 			sourceTree = "<group>";
 		};
