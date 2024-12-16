@@ -27,6 +27,8 @@ class InternLevelScene: SKScene {
     
     var pressingJumpAttack: Bool = false
     
+    let pauseNode: PauseNode
+    
     var newToolEnemies: [NewToolsEnemy] = []
     
     let timerNode: SKLabelNode = SKLabelNode()
@@ -49,8 +51,9 @@ class InternLevelScene: SKScene {
     }
     
     private func endGame() {
-        let endTransition = SKTransition.fade(withDuration: 5)
-        SceneTransitioner.shared.transition(self, toScene: MainMenuScene(size: size), transition: endTransition)
+        print("END")
+//        let endTransition = SKTransition.fade(withDuration: 5)
+//        SceneTransitioner.shared.transition(self, toScene: MainMenuScene(size: size), transition: endTransition)
     }
     
     override init(size: CGSize) {
@@ -78,6 +81,8 @@ class InternLevelScene: SKScene {
         cameraNode = SKCameraNode()
         cameraNode.position = CGPoint(x: size.width/2, y: size.height/2)
         
+        pauseNode = PauseNode(size: size)
+        
         super.init(size: size)
         
         spawnEnemy()
@@ -101,6 +106,7 @@ class InternLevelScene: SKScene {
         addChild(playerModel.node)
         addChild(groundModel.node)
         addChild(cameraNode)
+        addChild(pauseNode)
         
         for child in controlsModel.getChildren() {
             addChild(child)
@@ -124,7 +130,11 @@ class InternLevelScene: SKScene {
         for touch in touches {
             let location = touch.location(in: self)
             let touchedNode = atPoint(location)
-            determineActionBasedOn(touchedNode: touchedNode, touch: touch)
+            if(shouldVibrate(node: touchedNode as? VibrateProtocol)) {
+                vibrate(with: .light)
+            }
+            
+            determineActionBasedOn(touchedNode: touchedNode, touch: touch, checkOnPause: true)
         }
     }
     
@@ -134,10 +144,12 @@ class InternLevelScene: SKScene {
             let touchedNode = atPoint(location)
             if let button = activeTouches[touch] {
                 if !button.contains(location) {
-                    deactivate(button: button, baseTextureName: controlsModel.getBaseTextureName(button)!)
-                    playerModel.stopPlayerWalkingAnimation()
-                    playerModel.animateIdle()
-                    activeTouches[touch] = nil
+                    if !UserConfig.shared.isPaused() {
+                        deactivate(button: button, baseTextureName: controlsModel.getBaseTextureName(button)!)
+                        playerModel.stopPlayerWalkingAnimation()
+                        playerModel.animateIdle()
+                        activeTouches[touch] = nil
+                    }
                     determineActionBasedOn(touchedNode: touchedNode, touch: touch)
                 }
             } else {
@@ -146,31 +158,39 @@ class InternLevelScene: SKScene {
         }
     }
     
-    private func determineActionBasedOn(touchedNode: SKNode, touch: UITouch) {
-        switch touchedNode {
-        case is LeftArrowButton:
-            leftButtonPressed(touch: touch)
-            break
-        case is RightArrowButton:
-            rightButtonPressed(touch: touch)
-            break
-        case is JumpLabel:
-            jumpButtonPressed(touch: touch)
-            break
-        case is JumpButton:
-            jumpButtonPressed(touch: touch)
-            break
-        case is WeaponButton:
-            weaponSlotButtonPressed(nodeSelected: touchedNode)
-            break
-        case is AttackButton:
-            attackButtonPressed(touch: touch)
-            break
-        case is AttackLabel:
-            attackButtonPressed(touch: touch)
-            break
-        default:
-            break
+    private func determineActionBasedOn(touchedNode: SKNode, touch: UITouch, checkOnPause: Bool = false) {
+        if (checkOnPause){
+            if let scene = self.view?.scene {
+                pauseNode.checkPauseNodePressed(scene: scene, touchedNode: touchedNode)
+            }
+        }
+        
+        if !UserConfig.shared.isPaused() {
+            switch touchedNode {
+            case is LeftArrowButton:
+                leftButtonPressed(touch: touch)
+                break
+            case is RightArrowButton:
+                rightButtonPressed(touch: touch)
+                break
+            case is JumpLabel:
+                jumpButtonPressed(touch: touch)
+                break
+            case is JumpButton:
+                jumpButtonPressed(touch: touch)
+                break
+            case is WeaponButton:
+                weaponSlotButtonPressed(nodeSelected: touchedNode)
+                break
+            case is AttackButton:
+                attackButtonPressed(touch: touch)
+                break
+            case is AttackLabel:
+                attackButtonPressed(touch: touch)
+                break
+            default:
+                break
+            }
         }
     }
     
@@ -197,6 +217,18 @@ class InternLevelScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         movePlayerAndBackground()
         calculateEnemyMovement()
+//        if (UserConfig.shared.isPaused()) {
+//            print("----------------- Paused")
+//            playerModel.node.isPaused = true
+//            for enemy in newToolEnemies {
+//                enemy.node.isPaused = true
+//            }
+//        } else {
+//            playerModel.node.isPaused = false
+//            for enemy in newToolEnemies {
+//                enemy.node.isPaused = false
+//            }
+//        }
     }
     
     func checkGameOver() -> Bool {
@@ -220,6 +252,7 @@ class InternLevelScene: SKScene {
         let actionMove = SKAction.moveTo(x: -enemy.node.size.width/2, duration: playerModel.movementSpeed * 3)
         let actionRemove = SKAction.removeFromParent()
         enemy.node.run(SKAction.sequence([actionMove, actionRemove]))
+    
     }
     
     func calculateEnemyMovement() {

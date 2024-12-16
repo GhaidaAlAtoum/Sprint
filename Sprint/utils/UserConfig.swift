@@ -43,12 +43,20 @@ class UserConfig {
         UserDefaults.standard.set(level, forKey: currentLevelKey)
     }
     
+    func togglePause() {
+        self.paused.toggle()
+    }
+    
     func toggleVibration() {
         self.vibration.toggle()
     }
     
     func isVibrationEnabled() -> Bool {
         return self.vibration
+    }
+    
+    func isPaused() -> Bool {
+        return self.paused
     }
     
     private func trackVibrationValue() {

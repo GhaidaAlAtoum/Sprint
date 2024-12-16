@@ -127,3 +127,15 @@ extension CGFloat {
         return CGFloat.random() * (max - min) + min
     }
 }
+
+
+protocol VibrateProtocol: AnyObject{
+    
+}
+
+func shouldVibrate<T>(node: T?) -> Bool {
+    if (node == nil) {
+        return false
+    }
+    return true
+}

@@ -9,9 +9,9 @@
 import Foundation
 import SpriteKit
 
-class StartGameButton: SKSpriteNode{}
+class StartGameButton: SKSpriteNode, VibrateProtocol{}
 class StartGameLabel: SKLabelNode{}
-class MainMenuOptionsButton: SKSpriteNode{}
+class MainMenuOptionsButton: SKSpriteNode, VibrateProtocol{}
 
 class MainMenuNode: SKNode {
     let startGameButton: StartGameButton
@@ -34,7 +34,7 @@ class MainMenuNode: SKNode {
         startGameLabel.verticalAlignmentMode = .baseline
         startGameLabel.fontName = Constants.fontName
         
-        optionsButton = MainMenuOptionsButton(imageNamed: Constants.mainMenuOptionsButtonName)
+        optionsButton = MainMenuOptionsButton(imageNamed: Constants.optionsButton)
         optionsButton.scale(to: CGSize(width: size.width / 15, height: size.width / 15))
         //TODO: Dynamic Position
         optionsButton.position = CGPoint(x: size.width - 75, y: size.height - 50)

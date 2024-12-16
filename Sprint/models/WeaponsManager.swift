@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-class WeaponButton: SKSpriteNode{}
+class WeaponButton: SKSpriteNode, VibrateProtocol{}
 
 class WeaponsManager {
     static let shared: WeaponsManager = WeaponsManager()

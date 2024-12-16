@@ -8,9 +8,9 @@
 import SpriteKit
 import Foundation
 
-class BackButton: SKSpriteNode{}
-class SoundToggle: SKSpriteNode{}
-class VibrationToggle: SKSpriteNode{}
+class BackButton: SKSpriteNode, VibrateProtocol{}
+class SoundToggle: SKSpriteNode, VibrateProtocol{}
+class VibrationToggle: SKSpriteNode, VibrateProtocol{}
 
 class MainOptionsScene: SKScene {
     let background: Background
@@ -102,6 +102,10 @@ class MainOptionsScene: SKScene {
         for touch in touches {
             let location = touch.location(in: self)
             let touchedNode = atPoint(location)
+            if(shouldVibrate(node: touchedNode as? VibrateProtocol)) {
+                vibrate(with: .light)
+            }
+            
             switch touchedNode {
             case is BackButton:
                 animateButtonPressed(button: backButton, baseTextureName: Constants.backButtonName)

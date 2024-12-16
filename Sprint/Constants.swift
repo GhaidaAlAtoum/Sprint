@@ -26,7 +26,7 @@ struct Constants {
     static let circularControButton = "circularButton"
     static let fontName = "ARCADECLASSIC"
     
-    static let mainMenuOptionsButtonName:String = "configButton"
+    static let optionsButton:String = "configButton"
     
     
     static let optionsSceneBackground:String = "options_menu_backgroun"
@@ -40,6 +40,12 @@ struct Constants {
     static let soundButtonOnImage:String = "soundButton"
     static let soundButtonOffImage:String = "soundButton_off"
     static let soundButtonPressedImage:String = "soundButton_pressed"
+    
+    static let pauseButton:String = "pauseButton"
+    static let resumeButton:String = "resumeButton"
+    static let homeButton:String = "homeButton"
+    static let closeButton:String = "closeButton"
+    
 }
 
 struct PhysicsCategory {

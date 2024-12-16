@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-class SoundButton: SKSpriteNode{}
+class SoundButton: SKSpriteNode, VibrateProtocol{}
 
 class MainMenuScene: SKScene {
     let background: Background
@@ -40,6 +40,9 @@ class MainMenuScene: SKScene {
         for touch in touches {
             let location = touch.location(in: self)
             let touchedNode = atPoint(location)
+            if(shouldVibrate(node: touchedNode as? VibrateProtocol)) {
+                vibrate(with: .light)
+            }
             
             switch touchedNode {
             case is StartGameButton:
@@ -68,7 +71,7 @@ class MainMenuScene: SKScene {
     }
     
     func openMainOptionsScene() {
-        animateButtonPressed(button: mainMenuOptionsNode.optionsButton, baseTextureName: Constants.mainMenuOptionsButtonName)
+        animateButtonPressed(button: mainMenuOptionsNode.optionsButton, baseTextureName: Constants.optionsButton)
         SceneTransitioner.shared.transition(self, toScene: MainOptionsScene(size: size))
     }
 }
