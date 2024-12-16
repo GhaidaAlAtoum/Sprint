@@ -22,8 +22,6 @@ class PlayerModel {
     var isJumping: Bool = false
     var jumpForce: CGFloat = 400.0
     
-//    var weapon: Weapon
-    
     let walkingTextures:[SKTexture]
     let walkingDuration: TimeInterval
     let walkingAnimation: SKAction
@@ -43,11 +41,8 @@ class PlayerModel {
     let runAttackTextures:[SKTexture]
     let runAttackDuration: TimeInterval
     let runAttackAnimation: SKAction
-    
-    // jumpAttach
-    var isJumpAttacking = false
+ 
     var latestDirection: Direction = .right
-    
     
     var hp: Int = 3
     var damageCD = false
@@ -99,7 +94,6 @@ class PlayerModel {
                 if node.action(forKey: "idleAnimation") == nil {
                     node.size = CGSize(width: 809/8, height: 1024/8)
                     node.run(SKAction.repeatForever(idleAnimation), withKey: "idleAnimation")
-                    //                weapon.animateWeaponStd(duration: idleDuration)
                 }
             }
         }
@@ -111,7 +105,6 @@ class PlayerModel {
                 node.removeAction(forKey: "idleAnimation")
                 if node.action(forKey: "animateWalking") == nil && node.action(forKey: "runAttackAnimation") == nil {
                     node.run(SKAction.repeatForever(walkingAnimation), withKey: "animateWalking")
-                    //                weapon.animateWeaponWalking(duration: walkingDuration, direction: direction)
                 }
             }
         }
@@ -119,7 +112,6 @@ class PlayerModel {
     
     func stopPlayerWalkingAnimation() {
         node.removeAction(forKey: "animateWalking")
-//        weapon.stopWalkingAnimation()
     }
     
     func movePlayer(direction: Direction) {
@@ -158,7 +150,6 @@ class PlayerModel {
         node.texture = SKTexture(imageNamed: Constants.playerImageJumpBaseName + "0")
         
         node.removeAllActions()
-//        weapon.node.removeAllActions()
         if isJumping {return}
         isJumping = true
         
@@ -170,23 +161,11 @@ class PlayerModel {
         ]))
         
         node.size = CGSize(width: 809/8, height: 1024/8)
-    }
-    
-    func jumpAttack() {
-        if (!isJumpAttacking) {
-//            weapon.jumpAttack()
-//            node.removeAllActions()
-//            node.size = CGSize(width: 809/10, height: 1024/10)
-//            node.texture = SKTexture(imageNamed: "playerJumpAttak"
-            isJumpAttacking = true
-        }
+        node.position.y = basePlayerPosision.y
     }
     
     func collideWithFloor() {
-//        weapon.collideWithFloor()
-        
         isJumping = false
-        isJumpAttacking = false
     }
     
     func attack(weaponModel: WeaponModel, scene: SKScene, isMoving: Bool) {
@@ -217,32 +196,36 @@ class PlayerModel {
         node.size = CGSize(width: 809/8, height: 1024/8)
     }
     
-    func takeDamage(direction: CGFloat, damage: Int) {
-        if (!damageCD) {
-            hp -= damage
-            node.removeAllActions()
-            node.size = CGSize(width: 809/10, height: 1024/10)
-            node.physicsBody?.velocity = CGVector.zero
-            if (isJumping) {
-                node.physicsBody?.applyImpulse(CGVector(dx: 30 * direction , dy: jumpForce))
-            } else {
-                node.physicsBody?.applyImpulse(CGVector(dx: 20 * direction , dy: jumpForce))
-            }
-            
-            damageCD = true
-            let waitAction = SKAction.wait(forDuration: 1)
-            let runAction = SKAction.run {
-                self.damageCD = false
-            }
-            node.run(SKAction.sequence([
-                waitAction,
-                SKAction.run {
-                    self.animateIdle()
-                }
-            ]))
-            
-            let sequence = SKAction.sequence([waitAction, runAction])
-            node.run(sequence, withKey: "damage")
-        }
+//    func takeDamage(direction: CGFloat, damage: Int, enemyWidth: CGFloat) {
+//        if (!damageCD) {
+//            hp -= damage
+//            node.removeAllActions()
+//            node.size = CGSize(width: 809/10, height: 1024/10)
+//            node.physicsBody?.velocity = CGVector.zero
+//            if (isJumping) {
+//                node.physicsBody?.applyImpulse(CGVector(dx: (enemyWidth + 50) * direction , dy: jumpForce))
+//            } else {
+//                node.physicsBody?.applyImpulse(CGVector(dx: (enemyWidth + 40) * direction , dy: jumpForce))
+//            }
+//            
+//            damageCD = true
+//            let waitAction = SKAction.wait(forDuration: 1)
+//            let runAction = SKAction.run {
+//                self.damageCD = false
+//            }
+//            node.run(SKAction.sequence([
+//                waitAction,
+//                SKAction.run {
+//                    self.animateIdle()
+//                }
+//            ]))
+//            
+//            let sequence = SKAction.sequence([waitAction, runAction])
+//            node.run(sequence, withKey: "damage")
+//        }
+//    }
+    
+    func takeDamage(damage: Int) {
+        return
     }
 }

@@ -8,8 +8,10 @@
 import Foundation
 import SpriteKit
 
+class EnemyNode: SKSpriteNode{}
+
 class EnemyModel {
-    var node: SKSpriteNode
+    var node: EnemyNode
     var hp: Int
     var damage: Int
     var textures: [SKTexture]
@@ -17,7 +19,7 @@ class EnemyModel {
     var movCD: Bool = false
     var dmgCD: Bool = false
     
-    init(node: SKSpriteNode, hp: Int, damage: Int, textures: [SKTexture], speed: CGFloat) {
+    init(node: EnemyNode, hp: Int, damage: Int, textures: [SKTexture], speed: CGFloat) {
         self.node = node
         self.hp = hp
         self.damage = damage

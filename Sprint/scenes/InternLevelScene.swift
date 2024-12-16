@@ -131,11 +131,6 @@ class InternLevelScene: SKScene {
         case is JumpButton:
             jumpButtonPressed(touch: touch)
             break
-//            if controlsModel.jumpLabel.text == "Jump Attack" {
-//                jumpAttackButtonPressed()
-//            } else {
-//                jumpButtonPressed(touch: touch)
-//            }
         case is WeaponButton:
             weaponSlotButtonPressed(nodeSelected: touchedNode)
             break
@@ -162,7 +157,6 @@ class InternLevelScene: SKScene {
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
-//            verifyJumpButton(touch: touch)
             if let button = activeTouches[touch] {
                 deactivate(button: button, baseTextureName: controlsModel.getBaseTextureName(button)!)
                 activeTouches[touch] = nil
@@ -197,7 +191,8 @@ class InternLevelScene: SKScene {
 //            spawn, SKAction.wait(forDuration: 60)
 //        ])))
         
-        let enemy = NewToolsEnemy(hp: 3, damage: 1, speed: 8)
+        let enemy = NewToolsEnemy(hp: 3, damage: 1, speed: 8, size: playerModel.node.size)
+        
         enemy.node.name = "enemy"
         enemy.node.position = CGPoint(
             x: size.width + enemy.node.size.width/2,
@@ -232,17 +227,6 @@ class InternLevelScene: SKScene {
 //        }
 //    }
     
-//    func verifyJumpButton(touch: UITouch) {
-//        let location = touch.location(in: self)
-//        let touchednode = atPoint(location)
-//        if let name = touchednode.name {
-//            if (name == "jumpAttackButton") {
-//                pressingJumpAttack = false
-//                actionButton.texture = SKTexture(imageNamed: "jumpAttackButton")
-//            }
-//        }
-//    }
-    
     func weaponSlotButtonPressed(nodeSelected: SKNode) {
         if let weaponSlotSelected = nodeSelected as? WeaponButton {
             // Update Selected Weapon For All
@@ -266,10 +250,8 @@ class InternLevelScene: SKScene {
         self.run(waitForAnimation) {
             deactivate(button: self.controlsModel.jumpButton, baseTextureName: self.controlsModel.getBaseTextureName(self.controlsModel.jumpButton)!)
         }
-//        
-//        playerModel.playerJump()
-//        controlsModel.jumpLabel.text = "Jump Attack"
         
+        playerModel.playerJump()
     }
     
     func attackButtonPressed(touch: UITouch) {
@@ -279,12 +261,6 @@ class InternLevelScene: SKScene {
         }
         
         playerModel.attack(weaponModel: WeaponsManager.shared.getSelectedWeapon(), scene: self, isMoving: isMoving)
-    }
-    
-    func jumpAttackButtonPressed() {
-        pressingJumpAttack = true
-        playerModel.jumpAttack()
-//        actionButton.texture = SKTexture(imageNamed: "jumpAttackButtonPressed")
     }
     
     func movePlayerAndBackground(){
@@ -368,34 +344,7 @@ class InternLevelScene: SKScene {
         
         addChild(shape)
     }
-    
-    func fireTorpedo() {
-        let torpedoNode = SKSpriteNode(imageNamed: "torpedo")
-        torpedoNode.position = playerModel.node.position
-        torpedoNode.position.x += 5
-        
-        torpedoNode.physicsBody = SKPhysicsBody(circleOfRadius: torpedoNode.size.width / 2)
-        torpedoNode.physicsBody?.isDynamic = true
-        
-//        torpedoNode.physicsBody?.categoryBitMask = photonTorpedoCategory
-//        torpedoNode.physicsBody?.contactTestBitMask = alienCategory
-//        torpedoNode.physicsBody?.collisionBitMask = 0
-//        torpedoNode.physicsBody?.usesPreciseCollisionDetection = true
-        
-        self.addChild(torpedoNode)
-        
-        let animationDuration:TimeInterval = 0.3
-        
-        var actionArray = [SKAction]()
-        
-        actionArray.append(SKAction.move(to: CGPoint(x: size.width + 10, y: playerModel.node.position.y), duration: animationDuration))
-        actionArray.append(SKAction.removeFromParent())
-        
-        torpedoNode.run(SKAction.sequence(actionArray))
-            
-            
-            
-        }
+
 }
 
 
@@ -403,16 +352,90 @@ extension InternLevelScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         let contactA = contact.bodyA.categoryBitMask
         let contactB = contact.bodyB.categoryBitMask
-        if (contactA == PhysicsCategory.player && contactB == PhysicsCategory.ground) || (contactB == PhysicsCategory.player && contactA == PhysicsCategory.ground) {
-            if playerModel.isJumping {
-                controlsModel.jumpLabel.text = "Jump"
-                playerModel.collideWithFloor()
+        if (contactA == PhysicsCategory.player && contactB == PhysicsCategory.ground) ||
+           (contactA == PhysicsCategory.ground && contactB == PhysicsCategory.player) {
+            playerCollideWithFloor()
+        }
+
+        if (contactA == PhysicsCategory.player && contactB == PhysicsCategory.enemy) ||
+           (contactA == PhysicsCategory.enemy && contactB == PhysicsCategory.player) {
+            var enemyNode = contact.bodyB.node
+            if (!(contact.bodyA.node is PlayerNode)) {
+                enemyNode = contact.bodyA.node
+            }
+            print("Player; \(playerModel.node.position) , enemy\(enemyNode?.position)")
+            
+            if (ceil(playerModel.node.position.y) > ceil(enemyNode?.position.y ?? size.height)) {
+                let blinkTimes = 10.0
+                let duration = 3.0
+                let blinkAction = SKAction.customAction(withDuration: duration, actionBlock: { node, elapsedTime in
+                    let slice = duration / blinkTimes
+                    let remainder = Double(elapsedTime) % slice
+                    node.isHidden = remainder > slice / 2
+                })
                 
-                if (!activeTouches.values.contains(self.controlsModel.leftArrowButton) && !activeTouches.values.contains(self.controlsModel.rightArrowButton)) {
-                    playerModel.animateIdle()
+                let removeFromParent = SKAction.run({enemyNode?.removeFromParent()})
+                let notDynamic = SKAction.run {
+                    enemyNode?.physicsBody?.isDynamic = false
+                    enemyNode?.physicsBody?.categoryBitMask = PhysicsCategory.none
+                }
+                
+                enemyNode?.run(SKAction.sequence([notDynamic, blinkAction, removeFromParent]), withKey: "takingDamage")
+                
+            } else {
+                if enemyNode?.action(forKey: "takingDamage") == nil {
+                    enemyNode?.removeFromParent()
+                    playerModel.takeDamage(damage: 1)
+                    
+                    let blinkTimes = 10.0
+                    let duration = 3.0
+                    let blinkAction = SKAction.customAction(withDuration: duration, actionBlock: { node, elapsedTime in
+                        let slice = duration / blinkTimes
+                        let remainder = Double(elapsedTime) % slice
+                        node.isHidden = remainder > slice / 2
+                    })
+                    
+                    let setHidden = SKAction.run({self.playerModel.node.isHidden = false})
+                    
+                    playerModel.node.run(SKAction.sequence([blinkAction, setHidden]))
                 }
             }
         }
         
+        if (contactA == PhysicsCategory.enemy && contactB == PhysicsCategory.projictile) ||
+           (contactA == PhysicsCategory.projictile && contactB == PhysicsCategory.enemy) {
+            var enemyNode = contact.bodyA.node
+            if (!(contact.bodyA.node is EnemyNode)) {
+                enemyNode = contact.bodyB.node
+            }
+            if enemyNode?.action(forKey: "takingDamage") == nil {
+                let blinkTimes = 10.0
+                let duration = 3.0
+                let blinkAction = SKAction.customAction(withDuration: duration, actionBlock: { node, elapsedTime in
+                    let slice = duration / blinkTimes
+                    let remainder = Double(elapsedTime) % slice
+                    node.isHidden = remainder > slice / 2
+                })
+                let notDynamic = SKAction.run {
+                    enemyNode?.physicsBody?.isDynamic = false
+                    enemyNode?.physicsBody?.categoryBitMask = PhysicsCategory.none
+                }
+                
+                let removeFromParent = SKAction.run({enemyNode?.removeFromParent()})
+                
+                enemyNode?.run(SKAction.sequence([notDynamic, blinkAction, removeFromParent]),withKey: "takingDamage")
+            }
+        }
+        
+    }
+    
+    func playerCollideWithFloor() {
+        if playerModel.isJumping {
+            playerModel.collideWithFloor()
+            
+            if (!activeTouches.values.contains(self.controlsModel.leftArrowButton) && !activeTouches.values.contains(self.controlsModel.rightArrowButton)) {
+                playerModel.animateIdle()
+            }
+        }
     }
 }

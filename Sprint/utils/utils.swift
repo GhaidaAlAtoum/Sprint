@@ -37,3 +37,71 @@ func animateButtonPressed(button: SKSpriteNode,  baseTextureName: String) {
 func deactivate(button: SKSpriteNode, baseTextureName: String) {
     button.texture = SKTexture(imageNamed: baseTextureName)
 }
+
+func + (left: CGPoint, right: CGPoint) -> CGPoint {
+    return CGPoint(x: left.x + right.x, y: left.y + right.y)
+}
+
+func += (left: inout CGPoint, right: CGPoint) {
+    left = left + right
+}
+
+func - (left: CGPoint, right: CGPoint) -> CGPoint {
+    return CGPoint(x: left.x - right.x, y: left.y - right.y)
+}
+
+func -= (left: inout CGPoint, right: CGPoint) {
+    left = left - right
+}
+
+func * (left: CGPoint, right: CGPoint) -> CGPoint {
+    return CGPoint(x: left.x * right.x, y: left.y * right.y)
+}
+
+func *= (left: inout CGPoint, right: CGPoint) {
+    left = left * right
+}
+
+func * (point: CGPoint, scalar: CGFloat) -> CGPoint {
+    return CGPoint(x: point.x * scalar, y: point.y * scalar)
+}
+
+func *= (point: inout CGPoint, scalar: CGFloat) {
+    point = point * scalar
+}
+
+func / (left: CGPoint, right: CGPoint) -> CGPoint {
+    return CGPoint(x: left.x / right.x, y: left.y / right.y)
+}
+
+func /= (left: inout CGPoint, right: CGPoint) {
+    left = left / right
+}
+
+func / (point: CGPoint, scalar: CGFloat) -> CGPoint {
+    return CGPoint(x: point.x / scalar, y: point.y / scalar)
+}
+
+func /= (point: inout CGPoint, scalar: CGFloat) {
+    point = point / scalar
+}
+
+extension CGFloat {
+    static func %(left: CGFloat, right: CGFloat) -> CGFloat {
+        return left.truncatingRemainder(dividingBy: right)
+    }
+    
+    func sign() -> CGFloat {
+        return self >= 0.0 ? 1.0 : -1.0
+    }
+    
+    static func random() -> CGFloat {
+        return CGFloat(Float(arc4random()) / Float(UInt32.max))
+        
+    }
+    
+    static func random(min: CGFloat, max: CGFloat) -> CGFloat {
+        assert(min < max)
+        return CGFloat.random() * (max - min) + min
+    }
+}

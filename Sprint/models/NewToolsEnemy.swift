@@ -9,7 +9,7 @@ import Foundation
 import SpriteKit
 
 class NewToolsEnemy: EnemyModel {
-    init(hp: Int, damage: Int, speed: CGFloat) {
+    init(hp: Int, damage: Int, speed: CGFloat, size: CGSize) {
 //        let textures = [
 //            SKTexture(imageNamed: "enemyWalk0"),
 //            SKTexture(imageNamed: "enemyWalk0"),
@@ -17,9 +17,9 @@ class NewToolsEnemy: EnemyModel {
 //        ]
         
         super.init(
-            node: SKSpriteNode(imageNamed: "new_tool_enemy"), hp: hp, damage: damage, textures: [], speed: speed)
+            node: EnemyNode(imageNamed: "new_tool_enemy"), hp: hp, damage: damage, textures: [], speed: speed)
         
-        node.size = CGSize(width: 1024/8, height: 832/8)
+        node.size = size
 //        animateEnemyWalk()
         //TODO look into making it around the shape
         node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
@@ -27,9 +27,9 @@ class NewToolsEnemy: EnemyModel {
         node.physicsBody?.allowsRotation = false
         node.physicsBody?.friction = 1
         node.physicsBody?.restitution = 0
-//        node.physicsBody?.categoryBitMask = PhysicsCategory.enemy
-//        node.physicsBody?.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.player | PhysicsCategory.projictile
-//        node.physicsBody?.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.player | PhysicsCategory.projictile
+        node.physicsBody?.categoryBitMask = PhysicsCategory.enemy
+        node.physicsBody?.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.player | PhysicsCategory.projictile
+        node.physicsBody?.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.player | PhysicsCategory.projictile
         
     }
     
