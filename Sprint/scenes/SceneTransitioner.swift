@@ -10,10 +10,14 @@ import SpriteKit
 class SceneTransitioner {
     static let shared:SceneTransitioner = SceneTransitioner()
     
-    func transition(_ fromScene: SKScene, toScene: SKScene) {
+    func transition(_ fromScene: SKScene, toScene: SKScene, transition: SKTransition? = nil) {
         toScene.scaleMode = fromScene.scaleMode
         fromScene.run(waitForAnimation) {
-            fromScene.view?.presentScene(toScene)
+            if (transition == nil) {
+                fromScene.view?.presentScene(toScene)
+            } else {
+                fromScene.view?.presentScene(toScene, transition: transition!)
+            }
         }
     }
     

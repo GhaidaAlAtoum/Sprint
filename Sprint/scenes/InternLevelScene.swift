@@ -29,6 +29,30 @@ class InternLevelScene: SKScene {
     
     var newToolEnemies: [NewToolsEnemy] = []
     
+    let timerNode: SKLabelNode = SKLabelNode()
+    var time: Int = 21 {
+        didSet{
+            if (time >= 10) {
+                timerNode.text = "\(time)"
+            } else {
+                timerNode.text = "0\(time)"
+            }
+        }
+    }
+    
+    private func countdown() -> Void
+    {
+        time -= 1
+        if (time <= 0) {
+            endGame()
+        }
+    }
+    
+    private func endGame() {
+        let endTransition = SKTransition.fade(withDuration: 5)
+        SceneTransitioner.shared.transition(self, toScene: MainMenuScene(size: size), transition: endTransition)
+    }
+    
     override init(size: CGSize) {
         topBackground1 = Background(imageNamed: Constants.internLevelBackgroundImageName)
         topBackground1.scale(to: CGSize(width: size.width, height: size.height/1.25))
@@ -89,6 +113,11 @@ class InternLevelScene: SKScene {
             SKAction.run(spawnEnemy),
             SKAction.wait(forDuration: 5.0)
         ])))
+        
+        run(SKAction.repeatForever(SKAction.repeatForever(SKAction.sequence([
+            SKAction.run(countdown),
+            SKAction.wait(forDuration: 1)
+        ]))))
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
