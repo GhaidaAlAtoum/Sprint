@@ -42,10 +42,20 @@ class PlayerModel {
     let runAttackDuration: TimeInterval
     let runAttackAnimation: SKAction
  
+    
+    let failedTextures:[SKTexture]
+    let failedDuration: TimeInterval
+    let failedAnimation: SKAction
+    
+    let wonTextures:[SKTexture]
+    let wonDuration: TimeInterval
+    let wonAnimation: SKAction
+    
+    
     var latestDirection: Direction = .right
     
-    var hp: Int = 3
-    var damageCD = false
+    let hurtSound: SKAction = SKAction.playSoundFileNamed("hurt.mp3", waitForCompletion: false)
+    let fireSound: SKAction = SKAction.playSoundFileNamed("laser.mp3", waitForCompletion: false)
     
     init(size: CGSize) {
         node = PlayerNode(imageNamed: Constants.playerImageIdleBaseName + "0")
@@ -86,14 +96,32 @@ class PlayerModel {
         runAttackTextures = getTextures(baseImageName: Constants.playerRunAttackBaseName , numberOfImages: Constants.playerRunAttackNumberOfImages)
         runAttackDuration = 1/TimeInterval(runAttackTextures.count)
         runAttackAnimation = SKAction.animate(with: runAttackTextures, timePerFrame: runAttackDuration, resize: false, restore: false)
+        
+        failedTextures = getTextures(baseImageName: Constants.playerLostBaseName , numberOfImages: Constants.playerLostNumberOfImages)
+        failedDuration = 1/TimeInterval(failedTextures.count)
+        failedAnimation = SKAction.animate(with: failedTextures, timePerFrame: failedDuration, resize: false, restore: false)
+        
+        wonTextures = getTextures(baseImageName: Constants.playerWonBaseName , numberOfImages: Constants.playerWonNumberOfImages)
+        wonDuration = 1/TimeInterval(wonTextures.count)
+        wonAnimation = SKAction.animate(with: wonTextures, timePerFrame: wonDuration, resize: false, restore: false)
+    }
+    
+    func animateLost() {
+        node.size = CGSize(width: 809/6, height: 1024/6)
+        node.run(SKAction.repeatForever(failedAnimation), withKey:  SceneActions.player_lost_animation)
+    }
+    
+    func animateWon() {
+        node.size = CGSize(width: 809/6, height: 1024/6)
+        node.run(SKAction.repeatForever(wonAnimation), withKey:  SceneActions.player_won_animation)
     }
     
     func animateIdle() {
         if (!isJumping) {
-            if (!damageCD) {
-                if node.action(forKey: "idleAnimation") == nil {
+            if (node.action(forKey: SceneActions.player_taking_damage) == nil) {
+                if node.action(forKey: SceneActions.player_idle_animation) == nil {
                     node.size = CGSize(width: 809/8, height: 1024/8)
-                    node.run(SKAction.repeatForever(idleAnimation), withKey: "idleAnimation")
+                    node.run(SKAction.repeatForever(idleAnimation), withKey:  SceneActions.player_idle_animation)
                 }
             }
         }
@@ -101,17 +129,17 @@ class PlayerModel {
     
     func startPlayerWalkingAnimation(direction: Direction) {
         if (!isJumping) {
-            if (!damageCD) {
-                node.removeAction(forKey: "idleAnimation")
-                if node.action(forKey: "animateWalking") == nil && node.action(forKey: "runAttackAnimation") == nil {
-                    node.run(SKAction.repeatForever(walkingAnimation), withKey: "animateWalking")
+            if (node.action(forKey: SceneActions.player_taking_damage) == nil) {
+                node.removeAction(forKey:  SceneActions.player_idle_animation)
+                if node.action(forKey: SceneActions.player_walking_animation) == nil && node.action(forKey: SceneActions.player_run_attack_animation) == nil {
+                    node.run(SKAction.repeatForever(walkingAnimation), withKey: SceneActions.player_walking_animation)
                 }
             }
         }
     }
     
     func stopPlayerWalkingAnimation() {
-        node.removeAction(forKey: "animateWalking")
+        node.removeAction(forKey: SceneActions.player_walking_animation)
     }
     
     func movePlayer(direction: Direction) {
@@ -173,12 +201,12 @@ class PlayerModel {
         var duration = idleAttackDuration
         var count = idleAttackTextures.count
         var firstTexture = idleAttackTextures[0]
-        var animationName = "idleAttackAnimation"
+        var animationName = SceneActions.player_idle_attack_animation
         if (isMoving) {
             animationToRun = runAttackAnimation
             duration = runAttackDuration
             count = runAttackTextures.count
-            animationName = "runAttackAnimation"
+            animationName = SceneActions.player_idle_attack_animation
             firstTexture = runAttackTextures[0]
         }
         
@@ -190,42 +218,32 @@ class PlayerModel {
             SKAction.run {
                 weaponModel.fireProjectile(playerPosition: self.node.position, scene: scene, duration: duration * Double(count), direction: self.latestDirection)
             },
-            animationToRun
+            animationToRun,
+            fireSound
         ]), withKey: animationName)
         
         node.size = CGSize(width: 809/8, height: 1024/8)
     }
     
-//    func takeDamage(direction: CGFloat, damage: Int, enemyWidth: CGFloat) {
-//        if (!damageCD) {
-//            hp -= damage
-//            node.removeAllActions()
-//            node.size = CGSize(width: 809/10, height: 1024/10)
-//            node.physicsBody?.velocity = CGVector.zero
-//            if (isJumping) {
-//                node.physicsBody?.applyImpulse(CGVector(dx: (enemyWidth + 50) * direction , dy: jumpForce))
-//            } else {
-//                node.physicsBody?.applyImpulse(CGVector(dx: (enemyWidth + 40) * direction , dy: jumpForce))
-//            }
-//            
-//            damageCD = true
-//            let waitAction = SKAction.wait(forDuration: 1)
-//            let runAction = SKAction.run {
-//                self.damageCD = false
-//            }
-//            node.run(SKAction.sequence([
-//                waitAction,
-//                SKAction.run {
-//                    self.animateIdle()
-//                }
-//            ]))
-//            
-//            let sequence = SKAction.sequence([waitAction, runAction])
-//            node.run(sequence, withKey: "damage")
-//        }
-//    }
+    func takeDamage() {
+        let blinkTimes = 10.0
+        let duration = 3.0
+        let blinkAction = SKAction.customAction(withDuration: duration, actionBlock: { node, elapsedTime in
+            let slice = duration / blinkTimes
+            let remainder = Double(elapsedTime) % slice
+            node.isHidden = remainder > slice / 2
+        })
+        
+        let setHidden = SKAction.run({self.node.isHidden = false})
+        
+        node.run(SKAction.group([
+                SKAction.sequence([blinkAction, setHidden]),
+                hurtSound
+            ]
+        ), withKey: SceneActions.player_taking_damage)
+    }
     
-    func takeDamage(damage: Int) {
-        return
+    func stopAllActions() {
+        node.removeAllActions()
     }
 }

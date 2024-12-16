@@ -20,14 +20,8 @@ class WeaponsManager {
     }
     
     func resetWeapons(level: Int, scene: SKScene, boundingRect: CGRect) {
-        switch level {
-        case 0:
-            resetToLevel0(sceneSize: scene.size, boundingRect: boundingRect)
-            addWeaponSlotsToScene(scene: scene)
-            break
-        default:
-            break
-        }
+        resetToLevel(level: level, sceneSize: scene.size, boundingRect: boundingRect)
+        addWeaponSlotsToScene(scene: scene)
     }
     
     private func addWeaponSlotsToScene(scene: SKScene) {
@@ -36,30 +30,39 @@ class WeaponsManager {
         }
     }
     
-    private func resetToLevel0(sceneSize: CGSize, boundingRect: CGRect) {
+    private func resetToLevel(level: Int, sceneSize: CGSize, boundingRect: CGRect) {
         availableWeapons = [:]
         weaponSlots = [:]
-        let weapon_a_name = addWeapon(weaponName: "a", size: sceneSize, damage: 1, weaponsRect: boundingRect)
-        let weapon_b_name = addWeapon(weaponName: "b", size: sceneSize, damage: 1, weaponsRect: boundingRect)
-        let weapon_c_name = addWeapon(weaponName: "c", size: sceneSize, damage: 1, weaponsRect: boundingRect)
-        let weapon_d_name = addWeapon(weaponName: "d", size: sceneSize, damage: 1, weaponsRect: boundingRect)
+        let weapon_a_name = addWeapon(level: level, weaponName: "a", size: sceneSize, damage: 1, weaponsRect: boundingRect)
+        let weapon_b_name = addWeapon(level: level, weaponName: "b", size: sceneSize, damage: 1, weaponsRect: boundingRect)
+        let weapon_c_name = addWeapon(level: level, weaponName: "c", size: sceneSize, damage: 1, weaponsRect: boundingRect)
+        let weapon_d_name = addWeapon(level: level, weaponName: "d", size: sceneSize, damage: 1, weaponsRect: boundingRect)
         selectedWeapon = weapon_a_name
     }
     
-    func addWeapon(weaponName: String, size: CGSize, damage: Int, weaponsRect: CGRect) -> String {
+    
+    
+    static func getWeaponSelectedForAttack(weaponName: String, level: Int) -> String {
+        return "selected_weapon_\(weaponName)_level\(level)"
+    }
+    
+    static func getWeaponForOpt(weaponName: String, level: Int) -> String {
+        return "attack_\(weaponName)_level\(level)_opt"
+    }
+    
+    func addWeapon(level: Int, weaponName: String, size: CGSize, damage: Int, weaponsRect: CGRect) -> String {
         let buttonsSize: CGFloat = 80
         let buttonsHeight = size.height / 6 - buttonsSize / 1.5
-        let name = "weapon_" + weaponName
-        availableWeapons[name] = WeaponModel(name: name, damage: 1, size: size, position: .zero, projectileTexture: "attack_"+weaponName+"_projectile")
-        let tempNode = WeaponButton(imageNamed: "attack_" + weaponName + "_opt")
+        availableWeapons[weaponName] = WeaponModel(name: weaponName, damage: 1, size: size, position: .zero, projectileTexture: "attack_"+weaponName+"_projectile")
+        let tempNode = WeaponButton(imageNamed: WeaponsManager.getWeaponForOpt(weaponName: weaponName, level: level))
         tempNode.anchorPoint = .zero
         tempNode.scale(to: CGSize(width: buttonsSize, height: buttonsSize))
         tempNode.position = CGPoint(x: weaponsRect.minX + (CGFloat(weaponSlots.count) * buttonsSize * 1.1), y: buttonsHeight)
         tempNode.zPosition = 1
-        tempNode.name = name
+        tempNode.name = weaponName
         
         weaponSlots[weaponName] = tempNode
-        return name
+        return weaponName
     }
     
     func updateSelectedWeapon(node: WeaponButton)  {

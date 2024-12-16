@@ -108,7 +108,7 @@ class ControlsModel {
     }
     
     func updateSelectedWeapon(weaponName: String) {
-        attackButton.texture = SKTexture(imageNamed: "selected_\(weaponName)")
+        attackButton.texture = SKTexture(imageNamed: WeaponsManager.getWeaponSelectedForAttack(weaponName: weaponName, level: UserConfig.shared.getCurrentLevel()))
         attackLabel.isHidden = true
     }
 

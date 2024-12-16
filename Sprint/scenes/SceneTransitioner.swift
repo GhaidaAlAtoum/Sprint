@@ -23,21 +23,17 @@ class SceneTransitioner {
     
     func getNextLevelScene(size: CGSize) -> SKScene{
         switch(UserConfig.shared.getCurrentLevel()) {
+        case 0:
+            return FirstLevelScene(size: size)
         case 1:
-            print("Load Level 1")
-            return InternLevelScene(size: size)
+            return SecondLevelScene(size: size)
         case 2:
-            print("Load Level 2")
-            break
+            return ThirdLevelScene(size: size)
         case 3:
-            print("Load Level 3")
-            break
-        case 4:
-            print("Load Level 4")
-            break
+            UserConfig.shared.updateCurrentLevel(0)
+            return MainMenuScene(size: size)
         default:
-            return UnknownScene(size: size)
+            return MainMenuScene(size: size)
         }
-        return UnknownScene(size: size)
     }
 }

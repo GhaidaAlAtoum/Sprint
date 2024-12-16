@@ -10,7 +10,7 @@ import Foundation
 class UserConfig {
     static let shared: UserConfig = UserConfig()
     
-    var currentLevel:Int = 1
+    var currentLevel:Int = 0
     let currentLevelKey = "current_level"
     
     var vibration: Bool
@@ -18,9 +18,13 @@ class UserConfig {
     var paused: Bool
     
     init() {
+        let domain = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+        
         self.vibration = true
         self.paused = false
-        self.currentLevel = 1
+        self.currentLevel = 0
         if (isKeyPresentInUserDefaults(key: currentLevelKey)) {
             currentLevel = UserDefaults.standard.integer(forKey: currentLevelKey)
         } else {
@@ -36,6 +40,10 @@ class UserConfig {
     
     private func isKeyPresentInUserDefaults(key: String) -> Bool {
         return UserDefaults.standard.object(forKey: key) != nil
+    }
+    
+    func incrementLevel() {
+        updateCurrentLevel(self.currentLevel + 1)
     }
     
     func updateCurrentLevel(_ level: Int) {

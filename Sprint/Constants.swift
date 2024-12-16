@@ -46,6 +46,17 @@ struct Constants {
     static let homeButton:String = "homeButton"
     static let closeButton:String = "closeButton"
     
+    static let playerLostBaseName = "player.lost_"
+    static let playerLostNumberOfImages = 10
+    
+    static let playerWonBaseName = "player.won_"
+    static let playerWonNumberOfImages = 10
+    
+    static let stressHigh = "stressHigh"
+    static let cushedIt = "curshedIt"
+
+    
+    
 }
 
 struct PhysicsCategory {

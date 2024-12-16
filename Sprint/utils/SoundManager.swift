@@ -47,6 +47,6 @@ class SoundManager {
     }
     
     func playSoundTrack() {
-        SoundManager.shared.playAudio(audio: "backgroundMusic", loop: true, volume: 0.3)
+        SoundManager.shared.playAudio(audio: "retroBackgroundMusic", loop: true, volume: 0.3)
     }
 }

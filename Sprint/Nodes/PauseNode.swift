@@ -90,6 +90,11 @@ class PauseNode: SKNode {
         }
     }
     
+    func outPause(scene: SKScene) {
+        animateButtonPressed(button: pauseButton, baseTextureName: Constants.pauseButton)
+        pauseButtonPressed(scene: scene)
+    }
+    
     func closeButtonPressed() {
         self.run(waitForAnimation) {
             self.pauseConfigNode.closeButton.texture = SKTexture(imageNamed: Constants.closeButton)
@@ -98,8 +103,8 @@ class PauseNode: SKNode {
     }
     
     func pauseButtonPressed(scene: SKScene) {
+        UserConfig.shared.togglePause()
         self.pauseButton.run(waitForAnimation) {
-            UserConfig.shared.togglePause()
             self.pauseButton.texture = SKTexture(imageNamed: Constants.pauseButton)
             self.resumeButton.texture = SKTexture(imageNamed: Constants.resumeButton)
             if (UserConfig.shared.isPaused()) {
