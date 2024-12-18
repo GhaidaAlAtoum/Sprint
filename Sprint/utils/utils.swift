@@ -36,10 +36,10 @@ func getLevelTopBackgroundName(level: Int) -> String {
 
 func getLevelDuration(level: Int) -> Int {
     switch level {
-    case 0 : return 10
-    case 1 : return 10
-    case 2 : return 10
-    case 3 : return 10
+    case 0 : return 40
+    case 1 : return 40
+    case 2 : return 40
+    case 3 : return 40
     default: return 0
     }
 }
